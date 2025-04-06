@@ -1,0 +1,13 @@
+version: '3'
+services:
+  rstudio:
+    image: rocker/rstudio
+    environment:
+      - USER=rstudio
+      - PASSWORD=root
+    volumes:
+      - .:/home/rstudio
+      - ./init.sh:/init.sh # Monta el script de inicialización
+    ports:
+      - "8787:8787"
+    entrypoint: ["/init.sh"] # Ejecuta el script de inicialización
