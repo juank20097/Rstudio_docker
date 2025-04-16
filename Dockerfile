@@ -34,12 +34,24 @@ ENV LD_LIBRARY_PATH=/opt/oracle/instantclient
 ENV OCI_LIB=/opt/oracle/instantclient
 ENV OCI_INC=/opt/oracle/instantclient/sdk/include
 
+# Copiar el paquete al contenedor
+COPY DBI_1.2.3.tar.gz /tmp/DBI_1.2.3.tar.gz
+COPY ROracle_1.3-1.1.tar.gz /tmp/ROracle_1.3-1.1.tar.gz
+
 # Instalar DBI (en línea separada para asegurar que se instale)
-RUN R -e "install.packages('DBI', repos='https://cloud.r-project.org')" && \
+# Instalar el paquete sin usar internet
+RUN R CMD INSTALL /tmp/DBI_1.2.3.tar.gz && \
     R -e "stopifnot('DBI' %in% rownames(installed.packages()))"
 
 # Instalar ROracle (fuente + Oracle path)
-RUN R -e "install.packages('ROracle', repos='https://cloud.r-project.org', type='source', configure.args='--with-oci-lib=/opt/oracle/instantclient --with-oci-inc=/opt/oracle/instantclient/sdk/include')"
+ENV R_MAKEVARS_SITE=/etc/R/Makevars
+RUN echo "CFLAGS=-Wno-error=format-security" >> /etc/R/Makevars && \
+    echo "CXXFLAGS=-Wno-error=format-security" >> /etc/R/Makevars
+
+# Instalar ROracle offline usando rutas del Oracle Instant Client
+RUN R CMD INSTALL /tmp/ROracle_1.3-1.1.tar.gz \
+    --configure-args="--with-oci-lib=/opt/oracle/instantclient --with-oci-inc=/opt/oracle/instantclient/sdk/include" && \
+    R -e "stopifnot('ROracle' %in% rownames(installed.packages()))"
 
 # Puerto de RStudio
 EXPOSE 8787

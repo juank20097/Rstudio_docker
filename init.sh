@@ -1,12 +1,16 @@
 #!/bin/bash
 
 # Crea los usuarios
-useradd -m -s /bin/bash user1
-useradd -m -s /bin/bash user2
+useradd -m -s /bin/bash oscar.carate
+useradd -m -s /bin/bash wilson.arroyo
+useradd -m -s /bin/bash rolando.mantilla
+useradd -m -s /bin/bash danilo.criollo
 
 # Establece las contraseñas
-echo "user1:password1" | chpasswd
-echo "user2:password2" | chpasswd
+echo "oscar.carate:XD7GqYDyIubdQjW" | chpasswd
+echo "wilson.arroyo:i53QuSLvaj6OlBb" | chpasswd
+echo "rolando.mantilla:kY9THFEmDR6XIwU" | chpasswd
+echo "danilo.criollo:SErvUr0d7eusZlh" | chpasswd
 
 # Inicia RStudio Server
 /usr/lib/rstudio-server/bin/rserver --server-daemonize 0
